@@ -1,14 +1,21 @@
 "use client";
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import styles from "@/app/styles";
 
 interface ImageData {
     imageUrl: string;
     imageId: string;
 }
 
+interface RankingData {
+    imageId: string;
+    newRanking: number;
+}
+
 export default function ImageGallery() {
     const endpoint = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const router = useRouter();
     const [images, setImages] = useState<ImageData[]>([]);
     const [clickOrder, setClickOrder] = useState<string[]>([]);
     const pathname = usePathname().replace("/", "");
@@ -22,7 +29,7 @@ export default function ImageGallery() {
             const response = await fetch(
                 `${endpoint}getSessionData?sessionId=${pathname}`,
                 {
-                    method: "POST",
+                    method: "GET",
                 }
             );
 
@@ -31,7 +38,45 @@ export default function ImageGallery() {
             }
             const responseJson = await response.json();
             setImages(responseJson);
-        } catch (error) {}
+        } catch (error) {
+            if (error instanceof Error) {
+                alert(error.message);
+            }
+        }
+    };
+
+    const handleSubmit = async () => {
+        const rankings: RankingData[] = [];
+
+        clickOrder.forEach((id, index) => {
+            rankings.push({
+                imageId: id,
+                newRanking: index + 1,
+            });
+        });
+        const body = {
+            sessionId: pathname,
+            rankings: rankings,
+        };
+
+        try {
+            const response = await fetch(`${endpoint}updateSession`, {
+                method: "POST",
+                headers: {},
+                body: JSON.stringify(body),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to upload images");
+            }
+            const responseJson = await response.json();
+            console.log(responseJson);
+            router.push(`/${pathname}/results`);
+        } catch (error) {
+            if (error instanceof Error) {
+                alert(error.message);
+            }
+        }
     };
 
     const handleImageClick = (imageId: string) => {
@@ -54,6 +99,7 @@ export default function ImageGallery() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                gap: "20px",
             }}
         >
             <h1>Image Gallery</h1>
@@ -107,6 +153,16 @@ export default function ImageGallery() {
                         </div>
                     );
                 })}
+            </div>
+            <div>
+                <button
+                    onClick={handleSubmit}
+                    style={{
+                        ...styles.uploadButton,
+                    }}
+                >
+                    Submit Ranking
+                </button>
             </div>
         </div>
     );
