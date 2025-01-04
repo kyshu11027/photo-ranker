@@ -1,12 +1,27 @@
 "use client";
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { staatliches } from "@/app/fonts/fonts";
+import { staatliches, radley } from "@/app/fonts/fonts";
 import PickPixHero from "@/public/pickpix-hero.png";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const LandingPage = () => {
   const router = useRouter();
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
 
   return (
     <div className="pt-20 md:pt-20 sm:pt-20 lg:pt-30">
@@ -24,8 +39,35 @@ const LandingPage = () => {
           >
             CREATE A SESSION
           </button>
-          <button className="secondary-btn w-[200px] md:w-[245px]"> RATE PHOTOS </button>
+          <button onClick={handleClickOpen} className="secondary-btn w-[200px] md:w-[245px]">
+            RATE PHOTOS
+          </button>
         </div>
+        <Dialog
+          open={openDialog}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          PaperProps={{
+            sx: {
+              borderRadius: "20px",
+            },
+          }}
+        >
+          <div className="flex flex-col gap-4 px-6 py-4">
+            <h1 className={staatliches.className}>Paste the Session ID Below</h1>
+            <input
+              className="text-[18px] w-full outline-none px-4 py-2 rounded-[10px] bg-slate-50"
+              placeholder="Session ID"
+            />
+          </div>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose} autoFocus>
+              Go to Session
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         <div className="photo-hero hidden md:block">
           <Image

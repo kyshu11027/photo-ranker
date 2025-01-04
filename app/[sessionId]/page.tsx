@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { staatliches } from "../fonts/fonts";
-import styles from "@/app/styles";
 
 interface ImageData {
   imageUrl: string;
@@ -68,7 +67,6 @@ export default function ImageGallery() {
         throw new Error("Failed to upload images");
       }
       const responseJson = await response.json();
-      console.log(responseJson);
       router.push(`/${pathname}/results`);
     } catch (error) {
       if (error instanceof Error) {
@@ -101,7 +99,6 @@ export default function ImageGallery() {
             SUBMIT RANKINGS
           </button>
         </div>
-        {/* "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 flex-wrap w-full items-center" */}
         <div className="flex flex-row flex-wrap w-full justify-center items-center gap-5">
           {images.map((image) => {
             const clickIndex = clickOrder.indexOf(image.imageId);
@@ -111,11 +108,7 @@ export default function ImageGallery() {
                 key={image.imageId}
                 onClick={() => handleImageClick(image.imageId)}
               >
-                <img
-                  src={image.imageUrl}
-                  alt={`Image ${image.imageId}`}
-                  className="w-full h-full"
-                />
+                <img src={image.imageUrl} alt={`Image ${image.imageId}`} className="w-full" />
                 {clickIndex !== -1 && (
                   <span className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex justify-center items-center text-lg font-bold">
                     {clickIndex + 1}

@@ -1,6 +1,6 @@
-// app/[sessionId]/results/page.tsx
-
 import React from "react";
+import Link from "next/link";
+import { staatliches } from "../../fonts/fonts";
 
 interface ImageData {
   imageUrl: string;
@@ -45,16 +45,31 @@ const Results = async ({ params }: { params: { sessionId: string } }) => {
       .map(({ averageRanking, ...rest }) => rest);
 
     return (
-      <div style={styles.container}>
-        <h1>Results for Session: {sessionId}</h1>
-        <div style={styles.imageGrid}>
-          {sortedImages.map((image) => (
-            <div key={image.imageId} style={styles.imageWrapper}>
-              <img src={image.imageUrl} alt={image.imageId} style={styles.image} />
-            </div>
-          ))}
+      <>
+        <Link href="/">
+          <div className="header cursor-pointer mb-5">
+            <h1 className={staatliches.className}>PickPix</h1>
+          </div>
+        </Link>
+        <div className="flex flex-col w-full justify-center items-center gap-5">
+          <h1>Current Rankings</h1>
+          <div className="flex flex-row flex-wrap w-full justify-center items-center gap-5">
+            {images.map((image, index) => {
+              return (
+                <div className="flex flex-col justify-center items-center md:max-w-[33%] lg:max-w-[25%]">
+                  <h1> {index + 1} </h1>
+                  <div
+                    className="relative cursor-pointer rounded-[20px] overflow-hidden"
+                    key={image.imageId}
+                  >
+                    <img src={image.imageUrl} alt={`Image ${image.imageId}`} className="w-full" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </>
     );
   } catch (error) {
     return (
@@ -63,33 +78,6 @@ const Results = async ({ params }: { params: { sessionId: string } }) => {
       </div>
     );
   }
-};
-
-const styles = {
-  container: {
-    padding: "20px",
-    maxWidth: "1200px",
-    margin: "0 auto",
-    textAlign: "center" as "center", // Explicitly type textAlign
-  },
-  imageGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-    gap: "20px",
-    justifyItems: "center",
-    marginTop: "20px",
-  },
-  imageWrapper: {
-    borderRadius: "8px",
-    overflow: "hidden",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    backgroundColor: "#fff",
-  },
-  image: {
-    width: "100%",
-    height: "auto",
-    display: "block",
-  },
 };
 
 export default Results;

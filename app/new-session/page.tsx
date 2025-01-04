@@ -39,22 +39,24 @@ const NewSession = () => {
 
       const imageInfo = responseJson.imageIds;
 
-      for (let i = 0; i < imageInfo.length; i++) {
-        const url = imageInfo[i].url;
-        const file = images[i];
-        const response = await fetch(url, {
+      const uploadPromises = imageInfo.map((imageData: { url: string }, index: number) => {
+        const file = images[index];
+        return fetch(imageData.url, {
           method: "PUT",
           headers: {
             "Content-Type": file.type, // Set the correct MIME type
           },
           body: file,
+        }).then((res) => {
+          if (!res.ok) {
+            throw new Error(`Upload failed for image ${index + 1}: ${res.statusText}`);
+          }
+          console.log(`Upload successful for image ${index + 1}`);
         });
-        if (response.ok) {
-          console.log("Upload successful");
-        } else {
-          console.error("Upload failed:", response.statusText);
-        }
-      }
+      });
+
+      // Wait for all uploads to complete
+      await Promise.all(uploadPromises);
 
       router.push(`/${responseJson.sessionId}`);
     } catch (error: unknown) {
