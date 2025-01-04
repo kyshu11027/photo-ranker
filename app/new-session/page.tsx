@@ -20,20 +20,42 @@ const NewSession = () => {
   const handleSubmit = async () => {
     if (images.length === 0) return;
     setLoading(true);
-    const formData = new FormData();
-    images.forEach((image, index) => formData.append(`image${index}`, image));
+    // const formData = new FormData();
+    // images.forEach((image, index) => formData.append(`image${index}`, image));
 
     try {
-      const response = await fetch(`${endpoint}createNewSession`, {
+      const response = await fetch(`${endpoint}/createNewSession`, {
         method: "POST",
         headers: {},
-        body: formData,
+        body: JSON.stringify({
+          numImages: images.length,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload images");
+        throw new Error("Failed to create session");
       }
       const responseJson = await response.json();
+
+      const imageInfo = responseJson.imageIds;
+
+      for (let i = 0; i < imageInfo.length; i++) {
+        const url = imageInfo[i].url;
+        const file = images[i];
+        const response = await fetch(url, {
+          method: "PUT",
+          headers: {
+            "Content-Type": file.type, // Set the correct MIME type
+          },
+          body: file,
+        });
+        if (response.ok) {
+          console.log("Upload successful");
+        } else {
+          console.error("Upload failed:", response.statusText);
+        }
+      }
+
       router.push(`/${responseJson.sessionId}`);
     } catch (error: unknown) {
       if (error instanceof Error) {

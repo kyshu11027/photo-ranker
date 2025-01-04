@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { staatliches } from "../fonts/fonts";
 import styles from "@/app/styles";
 
 interface ImageData {
@@ -26,7 +27,7 @@ export default function ImageGallery() {
 
   const getSessionData = async () => {
     try {
-      const response = await fetch(`${endpoint}getSessionData?sessionId=${pathname}`, {
+      const response = await fetch(`${endpoint}/getSessionData?sessionId=${pathname}`, {
         method: "GET",
       });
 
@@ -57,7 +58,7 @@ export default function ImageGallery() {
     };
 
     try {
-      const response = await fetch(`${endpoint}updateSession`, {
+      const response = await fetch(`${endpoint}/updateSession`, {
         method: "POST",
         headers: {},
         body: JSON.stringify(body),
@@ -81,86 +82,50 @@ export default function ImageGallery() {
       const isAlreadyClicked = prevOrder.includes(imageId);
 
       if (isAlreadyClicked) {
-        // Remove the imageId from the click order if already clicked
         return prevOrder.filter((id) => id !== imageId);
       } else {
-        // Add the imageId to the click order if not clicked yet
         return [...prevOrder, imageId];
       }
     });
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "20px",
-      }}
-    >
-      <h1>Image Gallery</h1>
-      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-        {images.map((image) => {
-          const clickIndex = clickOrder.indexOf(image.imageId);
-          return (
-            <div
-              key={image.imageId}
-              onClick={() => handleImageClick(image.imageId)}
-              style={{
-                position: "relative",
-                cursor: "pointer",
-                border: "2px solid #ccc",
-                borderRadius: "8px",
-                overflow: "hidden",
-                width: "200px",
-                height: "200px",
-              }}
-            >
-              <img
-                src={image.imageUrl}
-                alt={`Image ${image.imageId}`}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-              {clickIndex !== -1 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: "8px",
-                    right: "8px",
-                    backgroundColor: "red",
-                    color: "white",
-                    borderRadius: "50%",
-                    width: "30px",
-                    height: "30px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    fontSize: "1.2rem",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {clickIndex + 1}
-                </span>
-              )}
-            </div>
-          );
-        })}
+    <>
+      <div onClick={() => router.push("/")} className="header cursor-pointer mb-5">
+        <h1 className={staatliches.className}>PickPix</h1>
       </div>
-      <div>
-        <button
-          onClick={handleSubmit}
-          style={{
-            ...styles.uploadButton,
-          }}
-        >
-          Submit Ranking
-        </button>
+      <div className="flex flex-col items-center gap-[20px] w-full px-[40px]">
+        <div className="flex flex-col gap-2 md:flex-row justify-around w-full">
+          <h1> Rank These Photos!</h1>
+          <button className="primary-btn" onClick={handleSubmit}>
+            SUBMIT RANKINGS
+          </button>
+        </div>
+        {/* "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 flex-wrap w-full items-center" */}
+        <div className="flex flex-row flex-wrap w-full justify-center items-center gap-5">
+          {images.map((image) => {
+            const clickIndex = clickOrder.indexOf(image.imageId);
+            return (
+              <div
+                className="relative cursor-pointer rounded-[20px] md:max-w-[33%] lg:max-w-[25%] overflow-hidden"
+                key={image.imageId}
+                onClick={() => handleImageClick(image.imageId)}
+              >
+                <img
+                  src={image.imageUrl}
+                  alt={`Image ${image.imageId}`}
+                  className="w-full h-full"
+                />
+                {clickIndex !== -1 && (
+                  <span className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex justify-center items-center text-lg font-bold">
+                    {clickIndex + 1}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
