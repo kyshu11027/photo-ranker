@@ -2,18 +2,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { staatliches, radley } from "@/app/fonts/fonts";
+import { staatliches } from "@/app/fonts/fonts";
 import PickPixHero from "@/public/pickpix-hero.png";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 
 const LandingPage = () => {
   const router = useRouter();
   const [openDialog, setOpenDialog] = useState(false);
+  const [sessionId, setSessionId] = useState("");
 
   const handleClickOpen = () => {
     setOpenDialog(true);
@@ -21,6 +19,19 @@ const LandingPage = () => {
 
   const handleClose = () => {
     setOpenDialog(false);
+  };
+
+  const sessionSubmitted = () => {
+    if (!sessionId) {
+      window.alert("Session ID cannot be empty");
+      return;
+    }
+    router.push("/" + sessionId);
+    setOpenDialog(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSessionId(e.target.value);
   };
 
   return (
@@ -59,11 +70,22 @@ const LandingPage = () => {
             <input
               className="text-[18px] w-full outline-none px-4 py-2 rounded-[10px] bg-slate-50"
               placeholder="Session ID"
+              value={sessionId}
+              onChange={handleInputChange}
             />
           </div>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleClose} autoFocus>
+            <Button
+              sx={{ fontFamily: "'Radley', sans-serif", borderRadius: "10px" }}
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+            <Button
+              sx={{ fontFamily: "'Radley', sans-serif", borderRadius: "10px" }}
+              onClick={sessionSubmitted}
+              autoFocus
+            >
               Go to Session
             </Button>
           </DialogActions>

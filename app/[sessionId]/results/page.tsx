@@ -18,7 +18,7 @@ const Results = async ({ params }: { params: { sessionId: string } }) => {
     const response = await fetch(`${endpoint}/getSessionData?sessionId=${sessionId}`);
 
     if (!response.ok) {
-      throw new Error("Failed to upload images");
+      throw new Error("Session ID does not exist");
     }
 
     const responseJson = await response.json();
@@ -74,6 +74,11 @@ const Results = async ({ params }: { params: { sessionId: string } }) => {
   } catch (error) {
     return (
       <div>
+        <Link href="/">
+          <div className="header cursor-pointer mb-5">
+            <h1 className={staatliches.className}>PickPix</h1>
+          </div>
+        </Link>
         <h1>Error: {error instanceof Error ? error.message : "Unknown Error"}</h1>
       </div>
     );
