@@ -2,9 +2,9 @@
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { staatliches } from "../fonts/fonts";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
+import Tooltip from "@mui/material/Tooltip";
 
 interface ImageData {
   imageUrl: string;
@@ -22,6 +22,8 @@ export default function ImageGallery() {
   const [images, setImages] = useState<ImageData[]>([]);
   const [clickOrder, setClickOrder] = useState<string[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openTopTooltip, setOpenTopTooltip] = useState(false);
+  const [openBottomTooltip, setOpenBottomTooltip] = useState(false);
   const pathname = usePathname().replace("/", "");
 
   const handleClickOpen = () => {
@@ -79,7 +81,7 @@ export default function ImageGallery() {
       if (!response.ok) {
         throw new Error("Failed to upload images");
       }
-      const responseJson = await response.json();
+      await response.json();
       router.push(`/${pathname}/results`);
     } catch (error) {
       if (error instanceof Error) {
@@ -98,6 +100,21 @@ export default function ImageGallery() {
         return [...prevOrder, imageId];
       }
     });
+  };
+
+  const handleCopy = async (text: string, tooltip: "top" | "bottom") => {
+    try {
+      await navigator.clipboard.writeText(text);
+      if (tooltip === "top") {
+        setOpenTopTooltip(true);
+        setTimeout(() => setOpenTopTooltip(false), 700);
+      } else if (tooltip === "bottom") {
+        setOpenBottomTooltip(true);
+        setTimeout(() => setOpenBottomTooltip(false), 700);
+      }
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
   };
 
   return (
@@ -128,6 +145,7 @@ export default function ImageGallery() {
           PaperProps={{
             sx: {
               borderRadius: "20px",
+              paddingBottom: "2rem",
             },
           }}
         >
@@ -141,14 +159,70 @@ export default function ImageGallery() {
           </DialogActions>
           <div className="flex flex-col gap-4 px-6 pb-4">
             <h1 className={staatliches.className}>Copy the Session Link or ID Below</h1>
-            <div className="text-[18px] w-full outline-none px-4 py-2 rounded-[10px] bg-gray-100">
-              {pathname}
+            <div className="flex flex-row gap-2">
+              <div className="text-[18px] w-full outline-none px-4 py-2 rounded-[10px] bg-gray-100">
+                {pathname}
+              </div>
+              <Tooltip
+                onClose={() => setOpenTopTooltip(false)}
+                open={openTopTooltip}
+                disableFocusListener
+                disableHoverListener
+                disableTouchListener
+                arrow
+                placement="top"
+                title="Copied to Clipboard!"
+                slotProps={{
+                  popper: {
+                    disablePortal: true,
+                  },
+                }}
+              >
+                <div
+                  onClick={() => handleCopy(pathname, "top")}
+                  className="w-[45px] flex justify-center items-center bg-gray-100 rounded-[10px] cursor-pointer hover:brightness-90"
+                >
+                  <img
+                    src="/copy-icon.png"
+                    alt="copy icon"
+                    className="w-1/2 h-1/2 object-contain"
+                  />
+                </div>
+              </Tooltip>
             </div>
-            <div className="text-[18px] w-full outline-none px-4 py-2 rounded-[10px] bg-gray-100">
-              {window.location.href}
+            <div className="flex flex-row gap-2">
+              <div className="text-[18px] w-full outline-none px-4 py-2 rounded-[10px] bg-gray-100 overflow-hidden whitespace-nowrap">
+                {window.location.href}
+              </div>
+              <Tooltip
+                onClose={() => setOpenBottomTooltip(false)}
+                open={openBottomTooltip}
+                disableFocusListener
+                disableHoverListener
+                disableTouchListener
+                arrow
+                title="Copied to Clipboard!"
+                slotProps={{
+                  popper: {
+                    disablePortal: true,
+                  },
+                }}
+              >
+                <div
+                  onClick={() => handleCopy(window.location.href, "bottom")}
+                  className="w-[45px] flex justify-center items-center bg-gray-100 rounded-[10px] cursor-pointer overflow-hidden hover:brightness-90"
+                >
+                  <img
+                    src="/copy-icon.png"
+                    alt="copy icon"
+                    className="w-1/2 h-1/2 object-contain"
+                  />
+                </div>
+              </Tooltip>
             </div>
           </div>
         </Dialog>
+
         <div className="flex flex-row flex-wrap w-full justify-center items-center gap-5">
           {images.map((image) => {
             const clickIndex = clickOrder.indexOf(image.imageId);

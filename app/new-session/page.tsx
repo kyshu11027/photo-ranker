@@ -14,7 +14,7 @@ interface PreviewFile extends File {
 const NewSession = () => {
   const endpoint = process.env.NEXT_PUBLIC_API_BASE_URL;
   const [images, setImages] = useState<PreviewFile[]>([]);
-  const [loading, setLoading] = useState<Boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const handleSubmit = async () => {

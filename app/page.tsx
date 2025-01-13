@@ -51,7 +51,7 @@ const LandingPage = () => {
             CREATE A SESSION
           </button>
           <button onClick={handleClickOpen} className="secondary-btn w-[200px] md:w-[245px]">
-            RATE PHOTOS
+            JOIN SESSION
           </button>
         </div>
         <Dialog
