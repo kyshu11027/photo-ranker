@@ -20,8 +20,6 @@ const NewSession = () => {
   const handleSubmit = async () => {
     if (images.length === 0) return;
     setLoading(true);
-    // const formData = new FormData();
-    // images.forEach((image, index) => formData.append(`image${index}`, image));
 
     try {
       const response = await fetch(`${endpoint}/createNewSession`, {
@@ -57,7 +55,7 @@ const NewSession = () => {
 
       // Wait for all uploads to complete
       await Promise.all(uploadPromises);
-
+      images.forEach((image) => URL.revokeObjectURL(image.preview));
       router.push(`/${responseJson.sessionId}`);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -69,13 +67,6 @@ const NewSession = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    // Cleanup object URLs when component unmounts
-    return () => {
-      images.forEach((image) => URL.revokeObjectURL(image.preview));
-    };
-  }, [images]);
 
   const onDrop = (acceptedFiles: File[]) => {
     // Limit the total number of images to 9
@@ -225,9 +216,7 @@ const NewSession = () => {
               {images.length === 0 && (
                 <div className="absolute inset-0 flex flex-col justify-center items-center space-y-4">
                   <Image src={Upload} alt="PickPix Hero Image" className="h-12 w-12" />
-                  <p className="text-[20px] md:text-[24px] font-semibold text-black">
-                    Upload Your Photos
-                  </p>
+                  <p className="text-[20px] md:text-[24px] text-black">Upload Your Photos</p>
                 </div>
               )}
             </div>
