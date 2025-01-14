@@ -128,11 +128,11 @@ export default function ImageGallery() {
           <div className="flex flex-row gap-2">
             <button
               onClick={handleClickOpen}
-              className="secondary-btn p-0 rounded-full flex justify-center items-center"
+              className="secondary-btn p-0 rounded-full flex justify-center items-center w-[52px]"
             >
               <img src="/share-icon.svg" alt="share icon" className="w-3/4 h-3/4 object-contain" />
             </button>
-            <button className="primary-btn" onClick={handleSubmit}>
+            <button className="primary-btn flex-grow" onClick={handleSubmit}>
               SUBMIT RANKINGS
             </button>
           </div>
