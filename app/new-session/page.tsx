@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { staatliches } from "../fonts/fonts";
 import { useRouter } from "next/navigation";
 import { useDropzone } from "react-dropzone";
