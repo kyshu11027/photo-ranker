@@ -22,7 +22,7 @@ const NewSession = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${endpoint}/createNewSession`, {
+      const response = await fetch(`${endpoint}/create-session`, {
         method: "POST",
         headers: {},
         body: JSON.stringify({

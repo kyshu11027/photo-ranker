@@ -15,7 +15,7 @@ const Results = async ({ params }: { params: Promise<{ sessionId: string }> }) =
 
   try {
     // Fetch data from your endpoint
-    const response = await fetch(`${endpoint}/getSessionData?sessionId=${sessionId}`);
+    const response = await fetch(`${endpoint}/get-session?sessionId=${sessionId}`);
 
     if (!response.ok) {
       throw new Error("Session ID does not exist");

@@ -40,7 +40,7 @@ export default function ImageGallery() {
 
   const getSessionData = async () => {
     try {
-      const response = await fetch(`${endpoint}/getSessionData?sessionId=${pathname}`, {
+      const response = await fetch(`${endpoint}/get-session?sessionId=${pathname}`, {
         method: "GET",
       });
 
@@ -72,7 +72,7 @@ export default function ImageGallery() {
     };
 
     try {
-      const response = await fetch(`${endpoint}/updateSession`, {
+      const response = await fetch(`${endpoint}/update-session`, {
         method: "POST",
         headers: {},
         body: JSON.stringify(body),
