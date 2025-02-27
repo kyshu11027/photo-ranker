@@ -79,7 +79,7 @@ export default function ImageGallery() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload images");
+        throw new Error("Failed to update session");
       }
       await response.json();
       router.push(`/${pathname}/results`);
